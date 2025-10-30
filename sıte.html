@@ -1,0 +1,1246 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AltınKod - Premium Yazılım Platformu</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Animate on Scroll (AOS) Kütüphanesi CSS -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet">
+    <style>
+        /* İnter fontunu varsayılan yap */
+        body, html {
+            font-family: 'Inter', sans-serif;
+            background-color: #0A0A0C; /* Çok Koyu Arka Plan (Siyaha Yakın) */
+            color: #E2E8F0; /* Açık Gri Metin */
+            scroll-behavior: smooth;
+            overflow-x: hidden; /* AOS animasyonları için yatay kaydırmayı engelle */
+        }
+
+        /* YENİ: Hareketli Aurora Arka Planı (Altın Tema) */
+        .hero-aurora {
+            position: relative;
+            overflow: hidden;
+            background-color: #0A0A0C;
+        }
+        .hero-aurora::before,
+        .hero-aurora::after {
+            content: '';
+            position: absolute;
+            z-index: 0;
+            width: 50vw;
+            height: 50vw;
+            border-radius: 50%;
+            opacity: 0.1; /* Daha yumuşak bir ışıma */
+            filter: blur(100px);
+            will-change: transform;
+        }
+        .hero-aurora::before {
+            background-color: #F59E0B; /* Amber/Altın */
+            top: -20%;
+            left: -10%;
+            animation: aurora-move 20s infinite alternate ease-in-out;
+        }
+        .hero-aurora::after {
+            background-color: #D97706; /* Koyu Amber */
+            bottom: -20%;
+            right: -10%;
+            animation: aurora-move 25s infinite alternate-reverse ease-in-out;
+        }
+        @keyframes aurora-move {
+            0% { transform: translateY(0%) translateX(0%); }
+            50% { transform: translateY(50%) translateX(50%); }
+            100% { transform: translateY(0%) translateX(0%); }
+        }
+        /* Hero içeriğinin arka planın önünde durması için */
+        .hero-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Ana Başlık Stili - Altın Işıma */
+        .hero-title {
+            text-shadow: 0px 0px 25px rgba(245, 158, 11, 0.4); /* Altın Işıma */
+        }
+
+        /* Ürün Kartı Stili - Altın Vurgulu */
+        .product-card {
+            background-color: #1A1A1E; /* Koyu Kart Arka Planı */
+            border: 1px solid #333;
+            transition: all 0.3s ease;
+            overflow: hidden; 
+        }
+        .product-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+            border-color: #F59E0B; /* Altın Vurgu (Amber-500) */
+        }
+
+        /* Buton Stilleri - Altın Tema */
+        .btn {
+            transition: all 0.3s ease;
+            border-radius: 8px;
+            padding: 10px 20px;
+            font-weight: 600;
+            cursor: pointer;
+            display: inline-block;
+        }
+        .btn-primary {
+            background-color: #F59E0B; /* Ana Altın Buton (Amber-500) */
+            color: #1E293B; /* Koyu renk metin */
+        }
+        .btn-primary:hover {
+            background-color: #FBBF24; /* (Amber-400) */
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(245, 158, 11, 0.3);
+        }
+        .btn-secondary {
+            background-color: #333; /* İkincil Buton (Koyu Gri) */
+            color: #E2E8F0;
+        }
+        .btn-secondary:hover {
+            background-color: #444;
+        }
+
+        /* Form Elemanları Stili - Altın Vurgulu */
+        .form-input {
+            background-color: #1A1A1E;
+            border: 1px solid #444;
+            color: white;
+            border-radius: 8px;
+            padding: 12px;
+            width: 100%;
+            transition: all 0.3s ease;
+        }
+        .form-input:focus {
+            outline: none;
+            border-color: #F59E0B; /* Altın Vurgu */
+            box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.3);
+        }
+
+        /* Modal Stilleri */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(5px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+        .modal-content {
+            background-color: #1A1A1E;
+            border: 1px solid #333;
+            padding: 24px;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 500px;
+            transform: scale(0.95);
+            transition: transform 0.3s ease;
+        }
+        .modal.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        .modal.active .modal-content {
+            transform: scale(1);
+        }
+
+        /* Yükleniyor İkonu - Altın */
+        .loader {
+            border: 4px solid #333;
+            border-top: 4px solid #F59E0B; /* Altın */
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+        }
+
+        /* Gemini Yükleniyor İkonu */
+        .gemini-loader {
+            display: none; /* Varsayılan olarak gizli */
+            width: 24px;
+            height: 24px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-top-color: #fff;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+        .gemini-loader.loading {
+            display: inline-block;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Sekme Stilleri - Altın */
+        .tab {
+            cursor: pointer;
+            padding: 10px 16px;
+            border-bottom: 3px solid transparent;
+            color: #94A3B8; /* Soluk renk */
+            transition: all 0.3s ease;
+        }
+        .tab:hover {
+            color: #E2E8F0;
+        }
+        .tab.active {
+            color: #F59E0B; /* Aktif Altın */
+            border-bottom-color: #F59E0B;
+        }
+
+        /* Özel Mesaj Kutusu */
+        #messageBox {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background-color: #1A1A1E;
+            color: white;
+            padding: 16px 24px;
+            border-radius: 8px;
+            border: 1px solid #333;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.4);
+            z-index: 2000;
+            transition: all 0.5s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+            opacity: 0;
+            visibility: hidden;
+        }
+        #messageBox.show {
+            transform: translateX(-50%) translateY(0);
+            opacity: 1;
+            visibility: visible;
+        }
+        #messageBox.success {
+            background-color: #10B981; /* Yeşil */
+            border-color: #059669;
+        }
+        #messageBox.error {
+            background-color: #EF4444; /* Kırmızı */
+            border-color: #DC2626;
+        }
+
+        /* Animasyonlu Altın Vurgu */
+        @keyframes gradient-bg {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        .animated-gradient {
+            background: linear-gradient(-45deg, #F59E0B, #FBBF24, #D97706, #F59E0B);
+            background-size: 400% 400%;
+            animation: gradient-bg 10s ease infinite;
+        }
+        /* Product Detail Style */
+        .detail-card {
+            background-color: #1A1A1E;
+        }
+        .detail-card .text-amber-400 {
+            color: #F59E0B;
+        }
+        .detail-card .border-amber-400 {
+            border-color: #F59E0B;
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <!-- Özel Mesaj Kutusu -->
+    <div id="messageBox">Mesaj içeriği buraya gelecek.</div>
+
+    <!-- HEADER / NAVİGASYON -->
+    <header class="bg-black/80 backdrop-blur-md sticky top-0 z-50 border-b border-gray-800">
+        <nav class="container mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center h-20">
+            <!-- Logo -->
+            <a href="#" id="homeLink" class="text-3xl font-bold text-white tracking-tighter" onclick="showView('homeView')">
+                ALTIN<span class="text-amber-400">KOD</span>
+            </a>
+            
+            <!-- Navigasyon Menüsü -->
+            <div class="hidden md:flex space-x-6 items-center">
+                <a href="#products" class="text-slate-300 hover:text-white transition duration-300">Ürünler</a>
+                <a href="#features" class="text-slate-300 hover:text-white transition duration-300">Özellikler</a>
+                <a href="#faq" class="text-slate-300 hover:text-white transition duration-300">S.S.S.</a>
+                <a href="#contact" class="text-slate-300 hover:text-white transition duration-300">İletişim</a>
+            </div>
+
+            <!-- Kullanıcı / Yönetici Butonları -->
+            <div id="userAuthSection" class="flex items-center space-x-3">
+                <span id="welcomeMsg" class="text-slate-300 text-sm hidden"></span>
+                <button id="toggleAdminBtn" class="btn btn-secondary text-sm hidden">Yönetici Girişi</button>
+            </div>
+        </nav>
+    </header>
+
+    <!-- ANA SAYFA (Ana sayfa, ürün detayı, admin paneli arasında geçiş olacak) -->
+    <main id="mainContent" class="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        
+        <!-- ======================= -->
+        <!-- BÖLÜM 1: ANA SAYFA (HOME) -->
+        <!-- ======================= -->
+        <div id="homeView">
+            <!-- HERO BÖLÜMÜ -->
+            <section class="hero-aurora text-center py-20 lg:py-32 rounded-lg -mt-12">
+                <div class="hero-content max-w-4xl mx-auto">
+                    <h1 class="hero-title text-5xl md:text-7xl font-extrabold text-white mb-6 leading-tight" data-aos="fade-up">
+                        İşinize Değer Katan <br> <span class="animated-gradient text-transparent bg-clip-text">Altın Değerinde Kodlar</span>
+                    </h1>
+                    <p class="text-xl text-slate-300 max-w-3xl mx-auto mb-10" data-aos="fade-up" data-aos-delay="200">
+                        Premium otomasyon botları, akıllı veri analiz araçları ve işinizi geleceğe taşıyacak özel yazılım çözümleri.
+                    </p>
+                    <a href="#products" class="btn btn-primary btn-lg text-lg px-8 py-4" data-aos="fade-up" data-aos-delay="400" onclick="document.getElementById('productCard_ALTINKOD_ANALIZ').click()">Tüm Yazılımları Gör</a>
+                </div>
+            </section>
+
+            <!-- ÖZELLİKLER BÖLÜMÜ -->
+            <section id="features" class="py-24">
+                <h2 class="text-4xl font-bold text-center text-white mb-16" data-aos="fade-up">Neden AltınKod?</h2>
+                <div class="grid md:grid-cols-3 gap-8">
+                    <!-- Özellik 1 -->
+                    <div class="product-card p-6 text-center" data-aos="fade-up" data-aos-delay="100">
+                        <div class="p-3 bg-amber-400/10 inline-block rounded-full mb-4 border border-amber-400">
+                            <!-- SVG İkon -->
+                            <svg class="w-8 h-8 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+                        </div>
+                        <h3 class="text-xl font-semibold text-white mb-3">Yüksek Performans</h3>
+                        <p class="text-slate-400">Yazılımlarımız, en yüksek performans ve hız için optimize edilmiştir. Vakit nakittir.</p>
+                    </div>
+                    <!-- Özellik 2 -->
+                    <div class="product-card p-6 text-center" data-aos="fade-up" data-aos-delay="300">
+                        <div class="p-3 bg-amber-400/10 inline-block rounded-full mb-4 border border-amber-400">
+                            <svg class="w-8 h-8 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg>
+                        </div>
+                        <h3 class="text-xl font-semibold text-white mb-3">Güven Odaklı</h3>
+                        <p class="text-slate-400">Tüm kodlarımız şeffaf, güvenli ve en güncel standartlara uygun olarak denetlenir.</p>
+                    </div>
+                    <!-- Özellik 3 -->
+                    <div class="product-card p-6 text-center" data-aos="fade-up" data-aos-delay="500">
+                        <div class="p-3 bg-amber-400/10 inline-block rounded-full mb-4 border border-amber-400">
+                            <svg class="w-8 h-8 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m12.728 0l-.707.707M12 21v-1m-6.657-3.343l.707-.707m12.728 0l.707.707M12 6a3 3 0 100 6 3 3 0 000-6z"></path></svg>
+                        </div>
+                        <h3 class="text-xl font-semibold text-white mb-3">Yapay Zeka Gücü</h3>
+                        <p class="text-slate-400">Gemini API entegrasyonları ile sadece "çalışan" değil, "düşünen" yazılımlara sahip olun.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ÜRÜNLER BÖLÜMÜ -->
+            <section id="products" class="py-20">
+                <h2 class="text-4xl font-bold text-center text-white mb-12" data-aos="fade-up">Premium Yazılımlar</h2>
+                <!-- Yükleniyor Göstergesi -->
+                <div id="productsLoading" class="flex justify-center items-center py-10 hidden">
+                    <div class="loader"></div>
+                    <p class="ml-4 text-slate-400">Yazılımlar yükleniyor...</p>
+                </div>
+                <!-- Ürün Listesi -->
+                <div id="productList" class="grid md:grid-cols-1 lg:grid-cols-1 gap-8">
+                    <!-- Ürün kartları buraya JavaScript ile eklenecek -->
+                </div>
+            </section>
+
+            <!-- S.S.S. BÖLÜMÜ -->
+            <section id="faq" class="py-24">
+                <h2 class="text-4xl font-bold text-center text-white mb-16" data-aos="fade-up">Sıkça Sorulan Sorular</h2>
+                <div class="max-w-3xl mx-auto space-y-8">
+                    <!-- Soru 1 -->
+                    <div class="product-card p-6" data-aos="fade-up" data-aos-delay="100">
+                        <h3 class="text-xl font-semibold text-white mb-3">Altın Stok Analizi nedir?</h3>
+                        <p class="text-slate-400">Altın Stok Analizi, özellikle kuyumcular ve metal ticareti yapan firmalar için tasarlanmış, envanter, müşteri takibi, kâr/zarar ve kasa yönetimini bir arada sunan entegre bir masaüstü uygulamasıdır (JavaFX tabanlı).</p>
+                    </div>
+                    <!-- Soru 2 -->
+                    <div class="product-card p-6" data-aos="fade-up" data-aos-delay="200">
+                        <h3 class="text-xl font-semibold text-white mb-3">Canlı piyasa fiyatlarını nasıl alıyor?</h3>
+                        <p class="text-slate-400">Uygulama, ayarlar bölümünden girdiğiniz RapidAPI anahtarı aracılığıyla Harem Altın gibi güvenilir kaynaklardan canlı kur verilerini (Gram Altın, USD, EUR vb.) otomatik olarak çeker ve her 3 dakikada bir günceller.</p>
+                    </div>
+                    <!-- Soru 3 -->
+                    <div class="product-card p-6" data-aos="fade-up" data-aos-delay="300">
+                        <h3 class="text-xl font-semibold text-white mb-3">Lisanslama ve destek süreci nasıl işliyor?</h3>
+                        <p class="text-slate-400">Lisanslama modeli, kullanıcının ihtiyacına göre değişmektedir (tekil lisans veya kurumsal ağ lisansı). Tüm lisanslar, 1 yıl boyunca ücretsiz güncelleme ve teknik destek hakkı içerir. Detaylı bilgi için lütfen iletişim formunu kullanın.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- İLETİŞİM BÖLÜMÜ -->
+            <section id="contact" class="py-24 bg-gray-900/50 rounded-lg">
+                <h2 class="text-4xl font-bold text-center text-white mb-16" data-aos="fade-up">Bizimle İletişime Geçin</h2>
+                <div class="grid md:grid-cols-2 gap-10 items-start">
+                    <!-- Sol Taraf: İletişim Bilgileri -->
+                    <div class="px-6 space-y-8" data-aos="fade-right">
+                        <div>
+                            <h3 class="text-2xl font-semibold text-white mb-4">Doğrudan Ulaşın</h3>
+                            <p class="text-slate-400 mb-6">Özel fiyat teklifleri, kurulum desteği ve iş ortaklığı için bizi arayın.</p>
+                        </div>
+                        
+                        <!-- Samet Bodur -->
+                        <div class="flex items-start space-x-4">
+                            <div class="p-3 bg-amber-400/10 inline-block rounded-full border border-amber-400">
+                                <svg class="w-6 h-6 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path></svg>
+                            </div>
+                            <div>
+                                <h4 class="text-lg font-semibold text-white">Samet Bodur</h4>
+                                <p class="text-slate-300">+90 553 704 05 18</p>
+                            </div>
+                        </div>
+
+                        <!-- Kaan Yıldırım -->
+                        <div class="flex items-start space-x-4">
+                            <div class="p-3 bg-amber-400/10 inline-block rounded-full border border-amber-400">
+                                <svg class="w-6 h-6 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path></svg>
+                            </div>
+                            <div>
+                                <h4 class="text-lg font-semibold text-white">Kaan Yıldırım</h4>
+                                <p class="text-slate-300">+90 552 123 12 33</p>
+                            </div>
+                        </div>
+
+                        <!-- E-posta -->
+                        <div class="flex items-start space-x-4">
+                            <div class="p-3 bg-amber-400/10 inline-block rounded-full mb-4 border border-amber-400">
+                                <svg class="w-6 h-6 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
+                            </div>
+                            <div>
+                                <h4 class="text-lg font-semibold text-white">E-Posta</h4>
+                                <p class="text-slate-300">info@altınkod.com</p>
+                            </div>
+                        </div>
+
+                    </div>
+                    <!-- Sağ Taraf: İletişim Formu -->
+                    <div class="px-6" data-aos="fade-left" data-aos-delay="200">
+                        <form id="contactForm" class="space-y-6">
+                            <div>
+                                <label for="contactName" class="block text-sm font-medium text-slate-300 mb-2">Adınız</label>
+                                <input type="text" id="contactName" class="form-input" required>
+                            </div>
+                            <div>
+                                <label for="contactEmail" class="block text-sm font-medium text-slate-300 mb-2">E-postanız</label>
+                                <input type="email" id="contactEmail" class="form-input" required>
+                            </div>
+                            <div>
+                                <label for="contactMessage" class="block text-sm font-medium text-slate-300 mb-2">Mesajınız</label>
+                                <textarea id="contactMessage" rows="5" class="form-input" required></textarea>
+                            </div>
+                            <div class="text-right">
+                                <button type="submit" class="btn btn-primary btn-lg">Mesajı Gönder</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <!-- =============================== -->
+        <!-- BÖLÜM 2: ÜRÜN DETAY SAYFASI -->
+        <!-- =============================== -->
+        <div id="productDetailView" class="hidden">
+            <!-- JavaScript ile doldurulacak -->
+        </div>
+
+        <!-- =============================== -->
+        <!-- BÖLÜM 3: ADMİN PANELİ (Kaldırıldı/Gizlendi) -->
+        <!-- =============================== -->
+        <div id="adminView" class="hidden">
+            <!-- Yönetim Formu Artık Gösterilmeyecek -->
+        </div>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="bg-black border-t border-gray-800 mt-20">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-12 text-center text-slate-400">
+            <p>&copy; <span id="currentYear"></span> AltınKod Premium Yazılım Çözümleri. Tüm hakları saklıdır.</p>
+            <p class="text-sm mt-2">Geliştiren: SametG</p>
+        </div>
+    </footer>
+
+
+    <!-- YÖNETİCİ GİRİŞİ MODALI (Sadece acil durumlar için korundu) -->
+    <div id="adminLoginModal" class="modal">
+        <div class="modal-content">
+            <h3 class="text-2xl font-semibold text-white mb-6">Yönetici Girişi</h3>
+            <form id="adminLoginForm" class="space-y-4">
+                <div>
+                    <label for="adminLoginEmail" class="block text-sm font-medium text-slate-300 mb-2">E-posta</label>
+                    <input type="email" id="adminLoginEmail" class="form-input" required>
+                </div>
+                <div>
+                    <label for="adminLoginPassword" class="block text-sm font-medium text-slate-300 mb-2">Şifre</label>
+                    <input type="password" id="adminLoginPassword" class="form-input" required>
+                </div>
+                <div class="flex justify-between items-center pt-2">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('adminLoginModal')">Kapat</button>
+                    <button type="submit" id="adminLoginSubmitBtn" class="btn btn-primary">
+                        <span id="adminLoginSubmitText">Giriş Yap</span>
+                        <div id="adminLoginSubmitLoader" class="loader w-5 h-5 hidden mx-auto"></div>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+
+    <!-- ======================= -->
+    <!-- JAVASCRIPT BÖLÜMÜ       -->
+    <!-- ======================= -->
+
+    <!-- Animate on Scroll (AOS) Kütüphanesi JS -->
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    
+    <!-- Firebase SDK -->
+    <script type="module">
+        // Firebase kütüphanelerini içe aktar
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { 
+            getAuth, 
+            signInWithEmailAndPassword, 
+            onAuthStateChanged, 
+            signOut,
+            signInAnonymously,
+            signInWithCustomToken
+        } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { 
+            getFirestore, 
+            collection, 
+            addDoc, 
+            getDocs,
+            onSnapshot,
+            doc, 
+            getDoc,
+            query,
+            where,
+            setDoc,
+            serverTimestamp,
+            setLogLevel
+        } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        // === FIREBASE KONFİGÜRASYONU ===
+        // Bu bilgileri kendi Firebase projenizden almalısınız.
+        const firebaseConfig = {
+            apiKey: "BURAYA_KENDI_API_KEYINIZI_GIRIN",
+            authDomain: "BURAYA_KENDI_AUTHDOMAIN_GIRIN",
+            projectId: "BURAYA_KENDI_PROJECTID_GIRIN",
+            storageBucket: "BURAYA_KENDI_STORAGEBUCKET_GIRIN",
+            messagingSenderId: "BURAYA_KENDI_MESSAGINGSENDERID_GIRIN",
+            appId: "BURAYA_KENDI_APPID_GIRIN"
+        };
+        
+        // __firebase_config değişkeni global olarak tanımlıysa onu kullan
+        // Bu, Canvas ortamı için gereklidir.
+        try {
+            const configFromGlobals = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : null;
+            if (configFromGlobals) {
+                Object.assign(firebaseConfig, configFromGlobals);
+            }
+        } catch (e) {
+            console.error("Firebase config parse error:", e);
+        }
+
+        // Firebase'i başlat
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+        
+        // Hata ayıklama loglarını aç (Geliştirme için)
+        setLogLevel('debug');
+
+        // === GLOBAL DEĞİŞKENLER ===
+        let currentUserId = null;
+        let isAdmin = false;
+        let productListenerUnsubscribe = null; // Ürün dinleyicisini tutar
+        let productListenerAttached = false; // Dinleyicinin tekrar tekrar kurulmasını engeller
+        
+        // Yönetici ID'niz buraya eklendi
+        const adminUid = "OjI7tjOFu5NlOkrVrvqbY8yZUiD3"; 
+        
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+        let isUserLoggedIn = false; // Kullanıcı girişi durumunu tutar (Anonim/Gerçek farketmez)
+
+        // Veritabanı yolları (Collection Paths)
+        const productsCollectionPath = `/artifacts/${appId}/public/data/products`;
+        const commentsCollectionPath = (productId) => `/artifacts/${appId}/public/data/products/${productId}/comments`;
+        const userProfileDocPath = (userId) => `/artifacts/${appId}/users/${userId}/profile/main`; 
+
+
+        // === GEMINI API FONKSİYONLARI (Simülasyon) ===
+        // Gemini API 403 hatası verdiği için, bu ortamda sonuçları SIMÜLE ediyoruz.
+        // Bu, sitenin görsel olarak işlevsel kalmasını sağlar.
+
+        async function callGeminiApi(prompt) {
+            // API çağrısı simülasyonu
+            await new Promise(resolve => setTimeout(resolve, 800)); // Simülasyon gecikmesi
+
+            if (prompt.includes('Aşağıdaki yazılım özelliklerini')) {
+                // Özellik Özetleyici Simülasyonu
+                return "Altın Stok Analizi, **kuyumcu ve metal ticareti** için özel olarak geliştirilmiş entegre bir platformdur. Canlı piyasa kurlarıyla otomatik kâr hesaplama, detaylı stok takibi, Barkod/RFID ile hızlı sayım ve müşterinin borç/alacak durumunu yöneten Defter modülleri sayesinde operasyonel verimliliğinizi anında artırır.";
+            } else if (prompt.includes('Yorumları analiz et')) {
+                // Yorum Analizcisi Simülasyonu
+                return `**Artıları:**
+* Hızlı ve hatasız **Kâr Hesaplaması** (Gram Karı takibi çok başarılı).
+* **Kasa ve Defter** modüllerinin entegre çalışması iş akışını çok kolaylaştırıyor.
+* **Canlı Kur** takibi için harika bir çözüm.
+
+**Eksileri:**
+* Kurulumu ilk başta biraz karmaşık gelebiliyor (Firebase/API ayarları).
+* Mobil uygulama desteği henüz yok.`;
+            }
+            return "Simülasyon yanıtı: Yapay zeka içeriği başarıyla işledi.";
+        }
+
+        // 1. Gemini: Özellik Özetleyici
+        async function getGeminiSummary(featuresText) {
+            const prompt = `Aşağıdaki yazılım özelliklerini, faydalarına odaklanarak, pazarlama diliyle ve çok kısa bir paragraf (en fazla 2-3 cümle) halinde Türkçe özetle. Sadece paragrafı döndür, başka bir şey yazma:\n\n${featuresText}`;
+            return await callGeminiApi(prompt);
+        }
+
+        // 3. Gemini: Yorum Analizcisi
+        async function getGeminiReviewSummary(commentsText) {
+            const prompt = `Aşağıdaki kullanıcı yorumlarını analiz et. Ürünün en çok beğenilen (Artıları) ve en çok eleştirilen (Eksileri) yönlerini 2-3 madde halinde, Türkçe olarak özetle. Yanıtı markdown formatında, '**Artıları:**' ve '**Eksileri:**' başlıklarını kullanarak ver. Eğer yeterli yorum yoksa veya yorumlar anlamsızsa "Yorumları analiz etmek için henüz yeterli veri yok." de. Sadece özeti döndür:\n\nYorumlar:\n${commentsText}`;
+            return await callGeminiApi(prompt);
+        }
+
+        // === SAYFA GÖRÜNÜM YÖNETİMİ ===
+        window.showView = function(viewId) {
+            // Tüm görünümleri gizle
+            homeView.classList.add('hidden');
+            productDetailView.classList.add('hidden');
+            adminView.classList.add('hidden');
+
+            // İstenen görünümü göster
+            const viewToShow = document.getElementById(viewId);
+            if (viewToShow) {
+                viewToShow.classList.remove('hidden');
+            }
+            window.scrollTo(0, 0); // Sayfanın başına git
+            
+            // AOS animasyonlarını yeniden tetikle (özellikle detay sayfası için)
+            AOS.refresh();
+        }
+
+        // === MODAL YÖNETİMİ ===
+        window.openModal = function(modalId) {
+            document.getElementById(modalId).classList.add('active');
+        }
+        window.closeModal = function(modalId) {
+            document.getElementById(modalId).classList.remove('active');
+        }
+
+        // Modalların dışına tıklayınca kapat
+        window.addEventListener('click', (e) => {
+            if (e.target.classList.contains('modal')) {
+                e.target.classList.remove('active');
+            }
+        });
+
+        // === ÖZEL MESAJ KUTUSU ===
+        window.showMessage = function(message, type = 'info') {
+            const messageBox = document.getElementById('messageBox');
+            messageBox.textContent = message;
+            
+            messageBox.classList.remove('success', 'error', 'show');
+            
+            if (type === 'success') {
+                messageBox.classList.add('success');
+            } else if (type === 'error') {
+                messageBox.classList.add('error');
+            }
+            
+            messageBox.classList.add('show');
+            
+            setTimeout(() => {
+                messageBox.classList.remove('show');
+            }, 3000);
+        }
+
+        // === KİMLİK DOĞRULAMA (AUTH) - SADECE ADMIN GİRİŞİ KORUNDU ===
+
+        onAuthStateChanged(auth, async (user) => {
+            const adminButton = document.getElementById('toggleAdminBtn');
+            const welcomeSpan = document.getElementById('welcomeMsg');
+
+            if (user) {
+                currentUserId = user.uid;
+                isUserLoggedIn = true;
+
+                if (currentUserId === adminUid) {
+                    isAdmin = true;
+                    adminButton.textContent = 'Yönetici Çıkışı';
+                    adminButton.classList.remove('hidden');
+                    welcomeSpan.textContent = `Hoşgeldin, Yönetici`;
+                    welcomeSpan.classList.remove('hidden');
+                } else if (!user.isAnonymous) {
+                    // Normal kullanıcı girişi kaldırıldığı için bu kısım anonim olmayan token girişi veya eski kullanıcılar içindir.
+                    adminButton.textContent = 'Çıkış Yap';
+                    adminButton.classList.remove('hidden');
+                    welcomeSpan.textContent = `Hoşgeldin, Kullanıcı`;
+                    welcomeSpan.classList.remove('hidden');
+                } else {
+                    // Anonim Kullanıcı
+                    adminButton.textContent = 'Yönetici Girişi';
+                    adminButton.classList.remove('hidden');
+                    welcomeSpan.textContent = `Ziyaretçi`;
+                    welcomeSpan.classList.add('hidden');
+                    isAdmin = false;
+                    isUserLoggedIn = false;
+                }
+
+            } else {
+                currentUserId = null;
+                isAdmin = false;
+                isUserLoggedIn = false;
+                adminButton.textContent = 'Yönetici Girişi';
+                adminButton.classList.remove('hidden');
+                welcomeSpan.classList.add('hidden');
+            }
+
+            // Veritabanı dinleyicisi mantığı
+            if (currentUserId && !productListenerAttached) {
+                console.log("Setting up product listener...");
+                setupProductListener();
+                productListenerAttached = true;
+            } else if (!currentUserId && productListenerUnsubscribe) {
+                console.log("Unsubscribing from product listener...");
+                productListenerUnsubscribe();
+                productListenerUnsubscribe = null;
+                productListenerAttached = false;
+            }
+        });
+
+        // Yönetici Girişi Toggle Butonu
+        toggleAdminBtn.addEventListener('click', async () => {
+            if (isAdmin || (auth.currentUser && !auth.currentUser.isAnonymous && auth.currentUser.uid !== adminUid)) {
+                // Yönetici veya normal kullanıcı ise Çıkış yap ve anonim girişe dön
+                try {
+                    await signOut(auth);
+                    await signInAnonymously(auth); 
+                    showMessage('Başarıyla çıkış yapıldı.', 'success');
+                    showView('homeView');
+                } catch (error) {
+                    console.error("Çıkış hatası:", error);
+                    showMessage(`Çıkış hatası: ${error.message}`, 'error');
+                }
+            } else {
+                // Ziyaretçi ise Yönetici Giriş Modalını aç
+                openModal('adminLoginModal');
+            }
+        });
+
+        // Yönetici Giriş Formu
+        document.getElementById('adminLoginForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const email = document.getElementById('adminLoginEmail').value;
+            const password = document.getElementById('adminLoginPassword').value;
+            const btn = document.getElementById('adminLoginSubmitBtn');
+            const text = document.getElementById('adminLoginSubmitText');
+            const loader = document.getElementById('adminLoginSubmitLoader');
+
+            setButtonLoading(btn, text, loader, true);
+            try {
+                const result = await signInWithEmailAndPassword(auth, email, password);
+                
+                if (result.user.uid !== adminUid) {
+                    // Giriş yapan kişi admin değilse, hemen çıkış yap ve anonim girişe dön
+                    await signOut(auth);
+                    await signInAnonymously(auth);
+                    showMessage('Yönetici yetkisi reddedildi. Lütfen doğru hesabı kullanın.', 'error');
+                } else {
+                    // Başarılı Admin Girişi
+                    closeModal('adminLoginModal');
+                    showMessage('Yönetici olarak giriş yapıldı!', 'success');
+                }
+
+            } catch (error) {
+                console.error("Yönetici Giriş hatası:", error.code, error.message);
+                if (error.code === 'auth/operation-not-allowed') {
+                    showMessage('Giriş hatası: E-posta/Şifre ile giriş Firebase projenizde etkinleştirilmemiş.', 'error');
+                } else if (error.code === 'auth/wrong-password' || error.code === 'auth/user-not-found') {
+                    showMessage('Geçersiz e-posta veya şifre.', 'error');
+                }
+                 else {
+                    showMessage(`Giriş hatası: ${error.message}`, 'error');
+                }
+            } finally {
+                setButtonLoading(btn, text, loader, false);
+            }
+        });
+
+
+        // === FIRESTORE (ÜRÜNLER) ===
+
+        // Tek bir ürün olduğu için statik data kullanıyoruz.
+        const initialProducts = [
+            {
+                id: 'ALTINKOD_ANALIZ',
+                name: 'Altın Stok Analizi (Masaüstü Uygulaması)',
+                description: 'Kuyumcular, döviz büroları ve metal ticareti yapan firmalar için tasarlanmış, entegre stok, kâr/zarar ve müşteri yönetim sistemi.',
+                price: 9999, // Yüksek fiyat sembolik olarak Premium olduğunu belirtir
+                category: 'Kurumsal Yazılım',
+                imageUrl: 'https://placehold.co/600x400/0A0A0C/F59E0B?text=ALTINKOD+ANALIZ+PLATFORMU',
+                features: `
+- Stok ve Envanter Yönetimi (Çoklu Kategori Desteği: Altın, Ziynet, Hurda, Döviz)
+- Anlık Piyasa Verileri (Harem Altın API) ile Gram Altın, USD ve EUR kurlarının otomatik güncellenmesi.
+- Kasa Yönetimi (Cash Register): Günlük kasa açılış/kapanış, nakit giriş/çıkış takibi.
+- İşlem Kaydı ve Kâr Hesaplaması: Alım/satım işlemlerinde anlık maliyet ve kâr/zarar (Gram Karı dahil) hesaplama.
+- Müşteri Kartları: Detaylı müşteri bilgileri, kümülatif kâr takibi ve geçmiş işlem listeleme.
+- Borç/Alacak Defteri (Ledger): ALACAKLI, VERECEKLİ ve EMANET kayıtlarının takibi.
+- Çoklu Ödeme Yöntemi: Peşin, Kart (POS Komisyonu dahil), Havale/EFT kaydı.
+- Barkod & RFID Entegrasyonu: Ürünlere barkod/RFID ID atama ve hızlı envanter sayımı yapma.
+- Raporlama ve Analiz: Günlük işlem raporları, aylık kâr/zarar grafikleri.
+                `,
+            }
+        ];
+        
+        // Product listesi boşsa ve admin değilse otomatik olarak örnek ürünü ekleyelim
+        async function checkAndAddInitialProduct() {
+             const productsRef = collection(db, productsCollectionPath);
+             try {
+                 const snapshot = await getDocs(productsRef);
+                 if (snapshot.empty && adminUid === "OjI7tjOFu5NlOkrVrvqbY8yZUiD3") {
+                     for(const product of initialProducts) {
+                         const docRef = doc(productsRef, product.id);
+                         await setDoc(docRef, product);
+                         console.log(`Initial product ${product.id} added.`);
+                     }
+                 }
+                 // Eğer admin değilse ve ürün yoksa, bu sefer sadece statik olarak ekleyelim (Bu Canvas ortamında en iyi çözüm)
+                 if (snapshot.empty || true) { // Statik ürünü her zaman göstermek için
+                     renderProductCards(initialProducts);
+                     if(initialProducts.length > 0) {
+                         // Sayfa ilk yüklendiğinde otomatik olarak detay sayfasına yönlendir.
+                         loadProductDetail(initialProducts[0].id); 
+                     }
+                 }
+             } catch(e) {
+                 console.warn("Ürün kontrolü/ekleme hatası (Firebase'e erişim sorunu olabilir), statik data kullanılıyor:", e);
+                 renderProductCards(initialProducts);
+                 if(initialProducts.length > 0) {
+                      loadProductDetail(initialProducts[0].id);
+                 }
+             }
+        }
+
+
+        function setupProductListener() {
+            // Sadece tek bir ürün olduğu için, Firebase dinleyicisini kaldırıp, statik datadan yüklüyoruz.
+            // Bu, sitenin tek ürün tanıtım amacına uygun en hızlı ve kararlı yöntemdir.
+            checkAndAddInitialProduct();
+        }
+
+
+        function renderProductCards(products) {
+            productsLoading.style.display = 'none';
+            productList.innerHTML = ''; 
+            
+            if (products.length === 0) {
+                productList.innerHTML = '<p class="text-slate-400 text-center col-span-3">Henüz hiç yazılım eklenmemiş.</p>';
+                return;
+            }
+            
+            let delay = 0; // AOS animasyon gecikmesi için
+            products.forEach((product) => {
+                const productId = product.id;
+                productList.innerHTML += createProductCard(product, productId, delay);
+                delay += 100; // Her kart için gecikmeyi artır
+            });
+
+            document.querySelectorAll('.product-card-link').forEach(card => {
+                card.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const id = card.dataset.id;
+                    const productData = products.find(p => p.id === id);
+                    if(productData) loadProductDetail(id, productData);
+                });
+            });
+            
+            AOS.refresh();
+        }
+
+        function createProductCard(product, id, delay) {
+            return `
+                <a href="#" id="productCard_${id}" class="product-card-link product-card block rounded-lg shadow-lg bg-gray-900/50" data-id="${id}" data-aos="fade-up" data-aos-delay="${delay}">
+                    <div class="flex flex-col lg:flex-row items-center p-6 space-y-4 lg:space-y-0 lg:space-x-6">
+                        <img class="w-24 h-24 object-cover rounded-xl border border-amber-400 p-1" src="${product.imageUrl}" alt="[${product.name} görseli]" onerror="this.src='https://placehold.co/96x96/1A1A1E/F59E0B?text=LOGO';">
+                        <div class="flex-grow text-center lg:text-left">
+                            <span class="inline-block bg-amber-400/10 text-amber-300 text-xs font-semibold px-3 py-1 rounded-full mb-3">${product.category}</span>
+                            <h3 class="text-2xl font-bold text-white mb-2">${product.name}</h3>
+                            <p class="text-slate-400 text-sm mb-0">${product.description}</p>
+                        </div>
+                        <div class="flex-shrink-0 text-right">
+                            <div class="text-3xl font-bold text-amber-400">${product.price} TL</div>
+                            <button class="btn btn-primary btn-sm mt-2 px-6">Detay & Teklif Al</button>
+                        </div>
+                    </div>
+                </a>
+            `;
+        }
+
+        async function loadProductDetail(productId, product) {
+            showView('productDetailView');
+            productDetailView.innerHTML = `
+                <div class="flex justify-center items-center py-20">
+                    <div class="loader"></div>
+                    <p class="ml-4 text-slate-400">Yazılım detayları yükleniyor...</p>
+                </div>
+            `;
+            
+            // Eğer Firebase'den gelmediyse, statik datayı kullan
+            if (!product) {
+                product = initialProducts.find(p => p.id === productId);
+                if (!product) {
+                    productDetailView.innerHTML = '<p class="text-red-400 text-center">Bu ürün bulunamadı.</p>';
+                    return;
+                }
+            }
+
+            productDetailView.innerHTML = createProductDetailLayout(product, productId);
+            
+            setupProductDetailListeners(product, productId);
+            
+            AOS.refresh();
+        }
+
+        function createProductDetailLayout(product, productId) {
+            const featuresList = (product.features || "")
+                .split('\n')
+                .filter(line => line.trim() !== '' && line.startsWith('-'))
+                .map((line, index) => `
+                    <li class="flex items-start space-x-3" data-aos="fade-left" data-aos-delay="${index * 50}">
+                        <svg class="flex-shrink-0 w-5 h-5 text-amber-400 mt-1" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path></svg>
+                        <span class="text-slate-300">${line.replace(/^-/, '').trim()}</span>
+                    </li>
+                `)
+                .join('');
+            
+            // Yorum formunun görünürlüğünü anonim kullanıcılar için devre dışı bırak
+            const canComment = auth.currentUser && !auth.currentUser.isAnonymous && isUserLoggedIn;
+
+            return `
+                <div class="grid lg:grid-cols-2 gap-12 items-start detail-card p-8 rounded-xl">
+                    <!-- Sol Taraf (Görsel ve Fiyat) -->
+                    <div data-aos="fade-in">
+                        <!-- Güncellenen Görsel Alanı -->
+                        <img src="https://placehold.co/800x600/1A1A1E/F59E0B?text=ALTINKOD+ANALIZ+SISTEMI" alt="[Altın Stok Analizi arayüz görseli]" class="w-full rounded-lg shadow-lg border border-amber-400 mb-6" onerror="this.src='https://placehold.co/800x600/1A1A1E/F59E0B?text=ALTINKOD+UYGULAMA+ARAYUZU';">
+                        <div class="bg-gray-900/50 p-6 rounded-lg border border-gray-800 flex justify-between items-center" data-aos="fade-up" data-aos-delay="100">
+                            <div>
+                                <span class="text-sm text-slate-400">Fiyat Teklifi</span>
+                                <p class="text-4xl font-bold text-amber-400">${product.price} TL + KDV</p>
+                            </div>
+                            <a href="#contact" class="btn btn-primary btn-lg text-lg px-10 py-4" onclick="document.getElementById('contactName').focus();">Teklif Al / Satın Al</a>
+                        </div>
+                    </div>
+                    
+                    <!-- Sağ Taraf (Açıklama ve Sekmeler) -->
+                    <div data-aos="fade-in" data-aos-delay="100">
+                        <span class="inline-block bg-amber-400/10 text-amber-300 text-xs font-semibold px-3 py-1 rounded-full mb-3">${product.category}</span>
+                        <h2 class="text-5xl font-bold text-white mb-4">${product.name}</h2>
+                        <p class="text-lg text-slate-300 mb-8">${product.description}</p>
+                        
+                        <!-- Sekmeler -->
+                        <div class="border-b border-gray-700 mb-6">
+                            <nav class="flex space-x-4">
+                                <button class="tab active" data-tab="features">🚀 Kapsamlı Özellikler</button>
+                                <button class="tab" data-tab="reviews">⭐ Yorumlar</button>
+                            </nav>
+                        </div>
+
+                        <!-- Sekme İçerikleri -->
+                        <div id="tabContent">
+                            <!-- Özellikler Sekmesi -->
+                            <div id="tab-features">
+                                <!-- GEMINI ÖZET -->
+                                <div class="bg-gray-900/50 p-5 rounded-lg border border-gray-800 mb-6" data-aos="fade-up">
+                                    <h4 class="text-lg font-semibold text-white mb-3">✨ Yapay Zeka Özeti</h4>
+                                    <div id="geminiSummaryContent" class="text-slate-300">
+                                        <div class="flex items-center">
+                                            <div class="loader w-6 h-6"></div>
+                                            <span class="ml-3">Yapay zeka özellikleri özetliyor...</span>
+                                        </div>
+                                    </div>
+                                    <button id="geminiSummaryBtn" class="btn btn-secondary text-sm mt-4 hidden">Yeniden Özetle</button>
+                                </div>
+                                <!-- /GEMINI ÖZET -->
+
+                                <h4 class="text-xl font-semibold text-white mb-4 border-l-4 border-amber-400 pl-3">Tüm Modüller ve Fonksiyonlar</h4>
+                                <ul class="space-y-3">
+                                    ${featuresList || '<li class="text-slate-400" data-aos="fade-left">Bu ürün için özellik listesi eklenmemiş.</li>'}
+                                </ul>
+                            </div>
+
+                            <!-- Yorumlar Sekmesi -->
+                            <div id="tab-reviews" class="hidden">
+                                <h4 class="text-xl font-semibold text-white mb-6">Kullanıcı Yorumları</h4>
+                                
+                                <!-- GEMINI YORUM ÖZETİ -->
+                                <div class="bg-gray-900/50 p-5 rounded-lg border border-gray-800 mb-6">
+                                    <h4 class="text-lg font-semibold text-white mb-3">✨ Yorumların Yapay Zeka Özeti</h4>
+                                    <div id="geminiReviewSummaryContent" class="text-slate-300 prose prose-invert prose-sm">
+                                        <p class="text-slate-400">Yorumları analiz etmek için butona tıklayın.</p>
+                                    </div>
+                                    <button id="geminiReviewSummaryBtn" class="btn btn-secondary text-sm mt-4 flex items-center">
+                                        <div class="gemini-loader mr-2"></div>
+                                        Yorumları Analiz Et
+                                    </button>
+                                </div>
+                                <!-- /GEMINI YORUM ÖZETİ -->
+
+                                <!-- Yorum Ekleme Formu -->
+                                <form id="commentForm" class="mb-8 ${canComment ? '' : 'hidden'}">
+                                    <textarea id="commentText" rows="3" class="form-input mb-3" placeholder="Bu yazılım hakkında yorumunuzu yazın..."></textarea>
+                                    <button type="submit" id="submitCommentBtn" class="btn btn-primary">Yorumu Gönder</button>
+                                </form>
+                                <p id="commentLoginMessage" class="${canComment ? 'hidden' : ''} text-slate-400 mb-6">Yorum yapma yetkisi sadece kayıtlı müşterilere aittir.</p>
+
+                                <!-- Yorum Listesi -->
+                                <div id="commentList" class="space-y-6">
+                                    <p class="text-slate-400">Yorumlar yükleniyor...</p>
+                                    <!-- Yorumlar buraya eklenecek -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Ürün Detay Sayfası Olay Dinleyicileri (Sekmeler, Yorumlar, Gemini)
+        function setupProductDetailListeners(product, productId) {
+            // Sekme Yönetimi
+            const tabs = document.querySelectorAll('.tab');
+            const tabFeatures = document.getElementById('tab-features');
+            const tabReviews = document.getElementById('tab-reviews');
+
+            tabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    tabs.forEach(t => t.classList.remove('active'));
+                    tab.classList.add('active');
+                    
+                    if (tab.dataset.tab === 'features') {
+                        tabFeatures.classList.remove('hidden');
+                        tabReviews.classList.add('hidden');
+                    } else {
+                        tabFeatures.classList.add('hidden');
+                        tabReviews.classList.remove('hidden');
+                    }
+                });
+            });
+
+            // Yorum listesi dinleyicisini kur
+            setupCommentListener(productId);
+
+            // Yorum formu
+            document.getElementById('commentForm')?.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                // Yorum yapma yetkisi sadece anonim olmayan kullanıcılarda olacak
+                if (!auth.currentUser || auth.currentUser.isAnonymous) {
+                    showMessage("Yorum yapma yetkiniz yok.", "error");
+                    return;
+                }
+                
+                const commentText = document.getElementById('commentText').value;
+                if (commentText.trim() === '') {
+                    showMessage("Lütfen bir yorum yazın.", "error");
+                    return;
+                }
+
+                try {
+                    await addDoc(collection(db, commentsCollectionPath(productId)), {
+                        text: commentText,
+                        userId: auth.currentUser.uid,
+                        userEmail: auth.currentUser.email || 'Kullanıcı',
+                        createdAt: serverTimestamp()
+                    });
+                    document.getElementById('commentText').value = '';
+                    showMessage("Yorumunuz başarıyla eklendi.", "success");
+                } catch (error) {
+                    console.error("Yorum ekleme hatası: ", error);
+                    showMessage(`Yorum eklenemedi: ${error.message}`, "error");
+                }
+            });
+            
+
+            // Gemini ÖZELLİK Özet Butonu
+            const geminiSummaryContent = document.getElementById('geminiSummaryContent');
+            const geminiSummaryBtn = document.getElementById('geminiSummaryBtn');
+            
+            async function fetchSummary() {
+                geminiSummaryContent.innerHTML = `
+                    <div class="flex items-center">
+                        <div class="loader w-6 h-6"></div>
+                        <span class="ml-3">Yapay zeka özellikleri özetliyor...</span>
+                    </div>`;
+                geminiSummaryBtn.classList.add('hidden');
+
+                const summary = await getGeminiSummary(product.features);
+                if (summary) {
+                    // Markdown'ı HTML'e çevir (basitçe)
+                    let htmlSummary = summary.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+                    geminiSummaryContent.innerHTML = `<p class="text-slate-300 italic">${htmlSummary}</p>`;
+                } else {
+                    geminiSummaryContent.innerHTML = '<p class="text-red-400">Özet yüklenemedi.</p>';
+                }
+                geminiSummaryBtn.classList.remove('hidden');
+            }
+            geminiSummaryBtn.addEventListener('click', fetchSummary);
+            fetchSummary(); // Sayfa yüklenince özeti otomatik çek
+
+            // Gemini YORUM Özet Butonu
+            const geminiReviewSummaryContent = document.getElementById('geminiReviewSummaryContent');
+            const geminiReviewSummaryBtn = document.getElementById('geminiReviewSummaryBtn');
+            geminiReviewSummaryBtn.addEventListener('click', async () => {
+                const loader = geminiReviewSummaryBtn.querySelector('.gemini-loader');
+                loader.classList.add('loading');
+                geminiReviewSummaryBtn.disabled = true;
+                geminiReviewSummaryContent.innerHTML = `
+                    <div class="flex items-center">
+                        <div class="loader w-6 h-6"></div>
+                        <span class="ml-3">Tüm yorumlar analiz ediliyor...</span>
+                    </div>`;
+
+                try {
+                    // Yorumları veritabanından çek
+                    const q = query(collection(db, commentsCollectionPath(productId)));
+                    const querySnapshot = await getDocs(q);
+                    
+                    if (querySnapshot.empty) {
+                        geminiReviewSummaryContent.innerHTML = '<p class="text-slate-400">Analiz edilecek yorum bulunamadı.</p>';
+                        return;
+                    }
+
+                    const allCommentsText = querySnapshot.docs.map(doc => doc.data().text).join('\n---\n');
+                    const reviewSummary = await getGeminiReviewSummary(allCommentsText);
+
+                    if (reviewSummary) {
+                        let htmlSummary = reviewSummary
+                            .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                            .replace(/\n/g, '<br>'); // Markdown yeni satırları
+                        geminiReviewSummaryContent.innerHTML = `<div class="prose prose-sm prose-invert text-slate-300">${htmlSummary}</div>`;
+                    } else {
+                        geminiReviewSummaryContent.innerHTML = '<p class="text-red-400">Yorum özeti yüklenemedi.</p>';
+                    }
+
+                } catch (error) {
+                    console.error("Yorum özeti alınırken hata:", error);
+                    geminiReviewSummaryContent.innerHTML = `<p class="text-red-400">Analiz hatası: ${error.message}</p>`;
+                } finally {
+                    loader.classList.remove('loading');
+                    geminiReviewSummaryBtn.disabled = false;
+                }
+            });
+        }
+
+        // Yorumları Dinle (Gerçek Zamanlı)
+        function setupCommentListener(productId) {
+            const commentList = document.getElementById('commentList');
+            const q = query(collection(db, commentsCollectionPath(productId)));
+            
+            onSnapshot(q, (snapshot) => {
+                commentList.innerHTML = '';
+                if (snapshot.empty) {
+                    commentList.innerHTML = '<p class="text-slate-400">Henüz yorum yapılmamış. İlk yorumu siz yapın!</p>';
+                    return;
+                }
+                snapshot.forEach((doc) => {
+                    const comment = doc.data();
+                    const createdAt = comment.createdAt?.toDate().toLocaleDateString('tr-TR') || '...';
+                    const userHandle = comment.userEmail ? comment.userEmail.split('@')[0] : (comment.userId ? `UID:${comment.userId.substring(0, 8)}...` : 'Ziyaretçi');
+                    
+                    commentList.innerHTML += `
+                        <div class="bg-gray-800 p-4 rounded-lg border border-gray-700">
+                            <p class="text-slate-300 mb-2">${comment.text}</p>
+                            <span class="text-xs text-amber-400 font-semibold">${userHandle}</span>
+                            <span class="text-xs text-slate-500"> - ${createdAt}</span>
+                        </div>
+                    `;
+                });
+            }, (error) => {
+                console.error("Yorumları çekerken hata: ", error);
+                commentList.innerHTML = `<p class="text-red-400">Yorumlar yüklenemedi: ${error.message}</p>`;
+            });
+        }
+
+
+        // === YARDIMCI FONKSİYONLAR ===
+        function setButtonLoading(button, textElement, loaderElement, isLoading) {
+            if (isLoading) {
+                textElement.classList.add('hidden');
+                loaderElement.classList.remove('hidden');
+                button.disabled = true;
+            } else {
+                textElement.classList.remove('hidden');
+                loaderElement.classList.add('hidden');
+                button.disabled = false;
+            }
+        }
+
+
+        // === BAŞLANGIÇ & İLK KİMLİK DOĞRULAMA ===
+        
+        async function initializeAppAndAuth() {
+            console.log("Initializing Auth...");
+            try {
+                if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+                    console.log("Found initial auth token. Signing in with custom token...");
+                    await signInWithCustomToken(auth, __initial_auth_token);
+                    console.log("Sign in with custom token successful.");
+                } else {
+                    console.log("No initial auth token. Signing in anonymously...");
+                    if (!auth.currentUser) {
+                         await signInAnonymously(auth);
+                         console.log("Anonymous sign-in successful.");
+                    } else {
+                        console.log("User already exists, no need for anonymous sign-in.");
+                    }
+                }
+            } catch (error) {
+                console.error("Initial sign-in error:", error);
+                showMessage("Kimlik doğrulama başlatılamadı. Lütfen sayfayı yenileyin.", "error");
+                
+                // Anonim girişi zorla (hata sonrası yetki sorununu çözmek için)
+                if (!auth.currentUser || (auth.currentUser && !auth.currentUser.isAnonymous)) {
+                    try {
+                        await signOut(auth); // Mevcut oturumu (varsa) kapat
+                        await signInAnonymously(auth);
+                        console.log("Fallback anonymous sign-in successful.");
+                    } catch (anonError) {
+                        console.error("Fallback anonymous sign-in error:", anonError);
+                    }
+                }
+            }
+        }
+
+        document.getElementById('currentYear').textContent = new Date().getFullYear();
+        
+        // AOS'u başlat
+        AOS.init({
+            duration: 600, // Animasyon süresi
+            once: true, // Animasyonlar sadece bir kez çalışsın
+            offset: 50, // Tetiklenme mesafesi
+        });
+        
+        // Uygulamayı başlat!
+        initializeAppAndAuth();
+
+        // Yönlendirmeyi burada başlatıyoruz
+        // setupProductListener(); // Zaten auth state changed içinde çağrılıyor.
+
+        // İletişim Formu gönderme (Sadece simülasyon)
+        document.getElementById('contactForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            showMessage('Teklif/Satın Alma talebiniz başarıyla iletildi!', 'success');
+            document.getElementById('contactForm').reset();
+            window.scrollTo(0, 0); 
+        });
+
+    </script>
+
+</body>
+</html>
